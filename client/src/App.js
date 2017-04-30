@@ -14,6 +14,7 @@ class App extends Component {
       currentFor: 0,
       currentAgainst: 0,
       bettingOn: false,
+      stakes: 0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
@@ -90,9 +91,12 @@ class App extends Component {
 
   handleChange(event) {
     if(this.state.bettingOn) {
-      this.setState({ currentFor: parseInt(event.target.value, 10) });
+      var newcurrentFor = parseInt(event.target.value, 10);
+      console.log(this.state.againstNums[this.state.currentNear.charCodeAt(0)-65])
+      this.setState({ currentFor: newcurrentFor, stakes: (this.state.forNums[this.state.currentNear.charCodeAt(0)-65] + this.state.againstNums[this.state.currentNear.charCodeAt(0)-65] + newcurrentFor) / (this.state.forNums[this.state.currentNear.charCodeAt(0)-65] + newcurrentFor) });
     } else {
-      this.setState({ currentAgainst: parseInt(event.target.value, 10) });
+      var newcurrentAgainst = parseInt(event.target.value, 10);
+      this.setState({ currentAgainst: newcurrentAgainst, stakes: (this.state.forNums[this.state.currentNear.charCodeAt(0)-65] + this.state.againstNums[this.state.currentNear.charCodeAt(0)-65] + newcurrentAgainst) / (this.state.againstNums[this.state.currentNear.charCodeAt(0)-65] + newcurrentAgainst) });
     }
   }
 
@@ -136,6 +140,7 @@ class App extends Component {
             <input type="text" size="6" onFocus={() => this.handleFocus(false, 4)} onChange={this.handleChange}/>
           </li>
         </ul>
+        <div>Stakes: {this.state.stakes}</div>
       <input type="submit" value="Place bet" />
     </form>
     );
