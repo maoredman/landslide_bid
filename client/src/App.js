@@ -98,7 +98,7 @@ class App extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="myform" onSubmit={this.handleSubmit}>
         <ul>
           <li id="0">
             臺灣大學綜合體育館

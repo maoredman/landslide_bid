@@ -8,6 +8,19 @@ body {
   margin-top: 7em;
 }
 
+#mapid {
+  margin: 10px auto;
+  width: 50vw;
+  height: 70vh;
+}
+
+.myform {
+  text-align: center;
+}
+ul {
+    list-style-type:none
+}
+
 #food-search {
   margin-top: 5em;
 }
