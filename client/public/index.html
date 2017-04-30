@@ -13,9 +13,96 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Food Lookup Demo</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <style>
+      #mapid { height: 500px; width: 500px}
+    </style>
+    <title>Info Market</title>
   </head>
   <body>
+    <div id="mapid"></div>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script>
+  // 設定經緯度座標
+  var lat_now = 23.974034;
+  var lng_now = 120.979817;
+
+  //初始化
+  var int = L.latLng(lat_now, lng_now);
+  var map = L.map('mapid');
+  map.setView(int, 8);
+  var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 18});
+  map.addLayer(osm);
+
+  var dis = 20000
+  var popup
+  var nowhighlight = -1
+
+  map.on('zoomend', function () {
+    if (map.getZoom()>12)
+      dis = 1250
+    else
+      dis = 1250 * Math.pow(2, 12 - map.getZoom())
+    for (var i = 0; i < n; i++) {
+      map.removeLayer(mycircle[i])
+      mycircle[i] = L.circle([info[i][0], info[i][1]], dis, {color: 'yellow', fillColor: '#fff200', fillOpacity: 0.3 }).addTo(map);
+    }
+    if (nowhighlight != -1){
+      map.removeLayer(mycircle[nowhighlight])
+      mycircle[nowhighlight] = L.circle([info[nowhighlight][0], info[nowhighlight][1]], dis, {color: 'red', fillColor: '#f03', fillOpacity: 0.5 }).addTo(map);
+    }
+
+  })
+
+  var info = new Array(3)
+  info[0] = new Array(25.02191800,121.535285,"\u81fa\u5927\u7d9c\u5408\u9ad4\u80b2\u9928","0","0")
+  info[1] = new Array(23.37224274,120.56951,"\u5609\u7fa9\u7e23\u4e2d\u57d4\u9109\u4e2d\u5d19\u6751","2","300")
+  info[2] = new Array(23.84624567,120.93305,"\u5357\u6295\u7e23\u9b5a\u6c60\u9109\u65e5\u6708\u6751","1","650")
+  info[3] = new Array(24.54240519,121.12825,"\u65b0\u7af9\u7e23\u4e94\u5cf0\u9109\u6843\u5c71\u6751","2","300")
+  info[4] = new Array(23.00467245,120.6665632,"\u9ad8\u96c4\u5e02\u516d\u9f9c\u5340\u8208\u9f8d\u91cc","2","850")
+  var n = 5
+
+  var mycircle = new Array(n)
+  for (var i = 0;i < n;++i){
+    mycircle[i] = L.circle([info[i][0], info[i][1]], dis, {color: 'yellow', fillColor: '#fff200', fillOpacity: 0.3 }).addTo(map);
+  }
+
+  function onMapClick(e) {
+    for (var i = 0; i < n; i++) {
+        map.removeLayer(mycircle[i])
+        mycircle[i] = L.circle([info[i][0], info[i][1]], dis, {color: 'yellow', fillColor: '#fff200', fillOpacity: 0.3 }).addTo(map);
+    }
+    for (var i = 0;i < n; ++i){
+      var a = document.getElementById(i);
+      a.style.backgroundColor ="transparent";
+    }
+    for (var i = 0;i < n;++i){
+      if (e.latlng.distanceTo(L.latLng(info[i][0],info[i][1])) < dis)
+        {highlight(i)
+        break}
+      nowhighlight = -1
+    }
+  }
+  map.on('click', onMapClick);
+
+  function highlight(r){
+    map.removeLayer(mycircle[r])
+    mycircle[r] = L.circle([info[r][0], info[r][1]], dis, {color: 'red', fillColor: '#f03', fillOpacity: 0.5 }).addTo(map);
+    nowhighlight = r
+    var a = document.getElementById(r);
+    a.style.backgroundColor ="#FFFF33";
+    popup = L.popup()
+      .setLatLng([info[r][0], info[r][1]])
+      .setContent(info[r][2]+"<br />Level:"+info[r][3]+"<br />Precipitation:"+info[r][4]+"mm")
+      .openOn(map);
+  }
+
+
+
+</script>
+
+
     <div id="root"></div>
     <!--
       This HTML file is a template.
