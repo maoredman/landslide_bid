@@ -13,12 +13,13 @@ class App extends Component {
       currentNear: '',
       currentFor: 0,
       currentAgainst: 0,
-      bettingOn: false,
+      bettingOn: true,
       stakes: 0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleLocation = this.handleLocation.bind(this);
   }
 
   componentDidMount() {
@@ -77,7 +78,7 @@ class App extends Component {
       }, function(e) {
         alert("Error submitting form!");
     }).then((token) => {
-        alert('Bet token is: ' + token);
+        alert('This token can be used to redeem your reward: ' + token);
     });
   }
 
@@ -100,49 +101,32 @@ class App extends Component {
     }
   }
 
+  handleLocation(event) {
+    var num = parseInt(event.target.value, 10);
+    console.log('handle '+num);
+    this.setState({ currentNear: String.fromCharCode('A'.charCodeAt(0) + num) });
+  }
+
   render() {
     return (
-      <form className="myform" onSubmit={this.handleSubmit}>
-        <ul>
-          <li id="0">
-            臺灣大學綜合體育館
-            <label>Bet on landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(true, 0)} onChange={this.handleChange}/>
-            <label>Bet on no landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(false, 0)} onChange={this.handleChange}/>
-          </li>
-          <li id="1">
-            新竹縣五峰鄉桃山村
-            <label>Bet on landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(true, 1)} onChange={this.handleChange}/>
-            <label>Bet on no landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(false, 1)} onChange={this.handleChange}/>
-          </li>
-          <li id="2">
-            南投縣魚池鄉日月村
-            <label>Bet on landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(true, 2)} onChange={this.handleChange}/>
-            <label>Bet on no landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(false, 2)} onChange={this.handleChange}/>
-          </li>
-          <li id="3">
-            嘉義縣中埔鄉中崙村
-            <label>Bet on landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(true, 3)} onChange={this.handleChange}/>
-            <label>Bet on no landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(false, 3)} onChange={this.handleChange}/>
-          </li>
-          <li id="4">
-            高雄市六龜區興龍里
-            <label>Bet on landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(true, 4)} onChange={this.handleChange}/>
-            <label>Bet on no landslide</label>
-            <input type="text" size="6" onFocus={() => this.handleFocus(false, 4)} onChange={this.handleChange}/>
-          </li>
-        </ul>
-        <div>Stakes: {this.state.stakes}</div>
-      <input type="submit" value="Place bet" />
-    </form>
+      <div>
+        <input id="storeLocation" style={{ display: 'none' }} type="text" onChange={this.handleLocation} />
+        <h1 className="register-title" id="formTitle">Click location on map</h1>
+        <form className="register" onSubmit={this.handleSubmit}>
+          <h5>Do you think a landslide will happen here within 2 months?</h5>
+          <div className="register-switch">
+            <input onClick={() => this.setState({ bettingOn: true, currentFor: this.state.currentAgainst, currentAgainst: 0 })} type="radio" name="sex" defaultValue="F" id="sex_f" className="register-switch-input" defaultChecked />
+            <label htmlFor="sex_f" className="register-switch-label">Yes</label>
+            <input onClick={() => this.setState({ bettingOn: false, currentAgainst: this.state.currentFor, currentFor: 0 })} type="radio" name="sex" defaultValue="M" id="sex_m" className="register-switch-input" />
+            <label htmlFor="sex_m" className="register-switch-label">No</label>
+          </div>
+          <h5>To ensure serious predictions, we request you submit an amount to bid. If your prediction is correct, you shall receive additional rewards according to the bidding stakes at that time.</h5>
+          <input onChange={this.handleChange} type="text" className="register-input" placeholder="Enter a number to bid" />
+          <h5>Stakes: {this.state.stakes}</h5>
+          The current bidding stakes are calculated according to parimutuel betting standards
+          <input type="submit" defaultValue="Submit Prediction" className="register-button" />
+        </form>
+      </div>
     );
   }
 }
