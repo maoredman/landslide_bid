@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+var Recaptcha = require('react-recaptcha');
 /*
 import SelectedFoods from './SelectedFoods';
 import FoodSearch from './FoodSearch';
@@ -15,11 +16,15 @@ class App extends Component {
       currentAgainst: 0,
       bettingOn: true,
       stakes: 0,
+      sitekey: "INSERT_SITEKEY_HERE",
+      recaptchaResponse: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
+    this.recaptchaLoaded = this.recaptchaLoaded.bind(this);
+    this.recaptchaResponded = this.recaptchaResponded.bind(this);
   }
 
   componentDidMount() {
@@ -66,7 +71,8 @@ class App extends Component {
         {
           near: this.state.currentNear,
           forNum: this.state.currentFor,
-          againstNum: this.state.currentAgainst
+          againstNum: this.state.currentAgainst,
+          response: this.state.recaptchaResponse,
         }
       }),
     }).then(function(res) {
@@ -107,6 +113,15 @@ class App extends Component {
     this.setState({ currentNear: String.fromCharCode('A'.charCodeAt(0) + num) });
   }
 
+  recaptchaLoaded() {
+    console.log('Done!!!!');
+  }
+
+  recaptchaResponded(response) {
+    console.log('recaptcha response: ' + response);
+    this.setState({ recaptchaResponse: response });
+  };
+
   render() {
     return (
       <div>
@@ -124,6 +139,14 @@ class App extends Component {
           <input onChange={this.handleChange} type="text" className="register-input" placeholder="Enter a number to bid" />
           <h5>Stakes: {this.state.stakes}</h5>
           The current bidding stakes are calculated according to parimutuel betting standards
+          <div id="recaptcha">
+            <Recaptcha
+              sitekey={this.state.sitekey}
+              render="explicit"
+              onloadCallback={this.recaptchaLoaded}
+              verifyCallback={this.recaptchaResponded}
+            />
+          </div>
           <input type="submit" defaultValue="Submit Prediction" className="register-button" />
         </form>
       </div>
