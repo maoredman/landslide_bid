@@ -16,7 +16,7 @@ class App extends Component {
       currentAgainst: 0,
       bettingOn: true,
       stakes: 0,
-      sitekey: "6LeRJSAUAAAAAMzxPKXAflQE0OMwtCh6j9pcnDs2",
+      sitekey: "INSERT_SITEKEY_HERE",
       recaptchaResponse: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
