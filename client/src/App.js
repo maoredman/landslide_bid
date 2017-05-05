@@ -16,7 +16,7 @@ class App extends Component {
       currentAgainst: 0,
       bettingOn: true,
       stakes: 0,
-      sitekey: "INSERT_SITEKEY_HERE",
+      sitekey: "6LeRJSAUAAAAAMzxPKXAflQE0OMwtCh6j9pcnDs2",
       recaptchaResponse: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -83,8 +83,12 @@ class App extends Component {
         }
       }, function(e) {
         alert("Error submitting form!");
-    }).then((token) => {
-        alert('This token can be used to redeem your reward: ' + token);
+    }).then((response) => {
+        if (response.success) {
+          alert('This token can be used to redeem your reward: ' + response.text);
+        } else {
+          alert('Sorry, but the reCAPTCHA failed. Please reload and resubmit')
+        }
     });
   }
 
